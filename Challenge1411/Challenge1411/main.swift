@@ -12,6 +12,28 @@ var ouro = 100
 
 print("Olá, Tav! Antes de entrar em nossa loja, como lhe devo te chamar?")
 let nomeTav = readLine() ?? ""
+print("\nE qual seria o seu nivel atual?")
+let nivelInput = readLine() ?? "0"
+let tavNivel = Int(nivelInput) ?? 0
+
+if tavNivel > 50 {
+    print("\nOpa, que nivel alto! Alguem como voce merece um descontinho...")
+} else {
+    print("\nMeh, que nivel baixo! Sem desconto para voce...")
+}
+
+
+//Desconto baseado no nivel
+func calcularpreco(_ preco: Int, nivel: Int) -> Int {
+    if nivel > 50 {
+        let desconto = Double(preco) * 0.10
+        return preco - Int(desconto)
+    } else {
+        return preco
+    }
+}
+
+
 
 let ItemsShop: [(nome: String, preco: Int)] = [
     ("Pacote de Suplimentos", 40),
@@ -27,7 +49,7 @@ let ItemsShop: [(nome: String, preco: Int)] = [
     
 ]
 
-print("Bem-vindo(a), \(nomeTav), a loja ItemsSuperMegaImportantes para sua Jornada!!! (sim, esse é o nome da loja) \nAtualmente você tem: \(ouro)g")
+print("\nBem-vindo(a), \(nomeTav), a loja ItemsSuperMegaImportantes para sua Jornada!!! (sim, esse é o nome da loja) \nAtualmente você tem: \(ouro)g \nNivel atual: \(tavNivel)")
 
 //Inventorio
 var inventario: [String] = []
@@ -49,35 +71,46 @@ func mostrarMenu() {
 }
 
 //Mostrar Items
-func showItemsShop() {
+func showItemsShop(nivel: Int) {
     print("\nClaro! Aqui estão os itens disponíveis:\n")
     for (index, item) in ItemsShop.enumerated() {
-        print("[\(index + 1)] \(item.nome) - \(item.preco)g")
+        let precoFinal = calcularpreco(item.preco, nivel: nivel)
+
+        if nivel > 50 {
+            print("\nVocê ganho 10% de desconto, \(nomeTav)!")
+            print("[\(index + 1)] \(item.nome) - \(precoFinal)g")
+        } else {
+            print("[\(index + 1)] \(item.nome) - \(precoFinal)g")
+        }
     }
 }
 
+
 //Comprar Items
-func comprarItem() {
-    showItemsShop()
+func comprarItem(nivel: Int) {
+    showItemsShop(nivel: nivel)
     print("\nDigite o número do item que deseja comprar:")
 
     if let input = readLine(), let choice = Int(input) {
         if choice >= 1 && choice <= ItemsShop.count {
             let selectedItem = ItemsShop[choice - 1]
+            let precoFinal = calcularpreco(selectedItem.preco, nivel: nivel)
             
-            if ouro >= selectedItem.preco {
-                ouro -= selectedItem.preco
+            if ouro >= precoFinal {
+                ouro -= precoFinal
                 inventario.append(selectedItem.nome)
                 print("\n✔ Você comprou: \(selectedItem.nome)!")
                 print("Ouro restante: \(ouro)g\n")
-            } else {
+            } else  {
                 print("\nSinto muito, \(nomeTav) você não tem ouro suficiente!\n")
             }
         } else {
-            print("\nOpa! Opção inválida! Tente novamente!\n")
+                print("\nOpa! Opção inválida! Tente novamente!\n")
+            }
         }
     }
-}
+            
+
 
 // Mostrar Inventorio
 func showInventario() {
@@ -101,9 +134,9 @@ while isRunning {
     if let input = readLine(), let option = Int(input) {
         switch option {
         case 1:
-            showItemsShop()
+            showItemsShop(nivel: tavNivel)
         case 2:
-            comprarItem()
+            comprarItem(nivel: tavNivel)
         case 3:
             showInventario()
         case 4:
@@ -118,6 +151,8 @@ while isRunning {
         print("\nEntrada inválida!\n")
     }
 }
+
+
 
 
 
