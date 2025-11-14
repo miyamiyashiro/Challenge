@@ -9,7 +9,9 @@ import Foundation
 
 var ouro = 20
 
-
+let ItemsShop: [(name: String, price: Int)] = [
+    
+]
 
 
 
